@@ -30,6 +30,7 @@ var uiConfig = {
 	// Opens IDP Providers sign-in flow in a popup.
 	'signInFlow': 'popup',
 	'signInOptions': [
+		firebase.auth.GoogleAuthProvider.PROVIDER_ID,
 		firebase.auth.EmailAuthProvider.PROVIDER_ID
 	],
 	// Terms of service url.
