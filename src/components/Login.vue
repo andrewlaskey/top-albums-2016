@@ -4,7 +4,7 @@
 	  	<div v-if="authenticated">
 	  		{{ user }}
 	  	</div>
-	  	<div id="firebaseauth-widget"></div>
+	  	<div id="firebaseauth-widget" v-if="!authenticated"></div>
 	</div>
 </template>
 
@@ -39,13 +39,18 @@ export default {
 	data () {
 		return {}
 	},
+	methods: {
+		setupAuthUI: function () {
+			if (!this.authenticated) {
+				ui.start('#firebaseauth-widget', uiConfig);
+			}
+		}
+	},
 	mounted: function () {
-		ui.start('#firebaseauth-widget', uiConfig);
+		this.setupAuthUI()
 	},
 	updated: function () {
-		if (!this.authenticated) {
-			ui.start('#firebaseauth-widget', uiConfig);
-		}
+		this.setupAuthUI()	
 	}
 }
 </script>

@@ -1,5 +1,7 @@
 <template>
 	<div class="main-menu">
+		<router-link to="/">List</router-link>
+		<router-link to="/vote">Vote</router-link>
 		<button v-if="authenticated" v-on:click="logout">Logout</button>
 	</div>
 </template>
