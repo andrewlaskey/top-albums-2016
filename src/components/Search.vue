@@ -23,6 +23,7 @@ import axios from 'axios'
 
 export default {
   name: 'search',
+  props: ['enabled'],
   data () {
     return {
       search: {
@@ -67,7 +68,9 @@ export default {
       });
     },
     selectAlbum: function (album) {
-      this.$emit('selectAlbum', album);
+      if (this.enabled) {
+        this.$emit('selectAlbum', album);
+      }
     }
   }
 }
