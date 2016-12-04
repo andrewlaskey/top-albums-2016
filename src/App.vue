@@ -4,7 +4,8 @@
   	<div v-if="authenticated">
   		{{ user }}
   	</div>
-  	<div id="firebaseauth-widget" v-if="!authenticated"></div>
+  	<button v-if="authenticated" v-on:click="logout()">Log out</button>
+  	<div id="firebaseauth-widget"></div>
     <hello></hello>
   </div>
 </template>
@@ -16,6 +17,26 @@ import firebaseui from 'firebaseui'
 import {CONFIG} from '../private.config.js'
 
 firebase.initializeApp(CONFIG.FIREBASE)
+
+var uiConfig = {
+	'callbacks': {
+	    // Called when the user has been successfully signed in.
+	    'signInSuccess': function(user, credential, redirectUrl) {
+			// Do not redirect.
+			console.log('in');
+			return false;
+	    }
+	},
+	// Opens IDP Providers sign-in flow in a popup.
+	'signInFlow': 'popup',
+	'signInOptions': [
+		firebase.auth.EmailAuthProvider.PROVIDER_ID
+	],
+	// Terms of service url.
+	'tosUrl': 'https://www.google.com'
+};
+
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 export default {
 	name: 'app',
@@ -30,34 +51,16 @@ export default {
 	},
 	created: function () {
 		var _this = this;
-		firebase.auth().onAuthStateChanged(_this.handleUserSignIn);
+		firebase.auth().onAuthStateChanged(_this.handleAuthStateChange);
 	},
 	mounted: function () {
-		var uiConfig = {
-			'callbacks': {
-			    // Called when the user has been successfully signed in.
-			    'signInSuccess': function(user, credential, redirectUrl) {
-					// Do not redirect.
-					return false;
-			    }
-			},
-			// Opens IDP Providers sign-in flow in a popup.
-			'signInFlow': 'popup',
-			'signInOptions': [
-				firebase.auth.EmailAuthProvider.PROVIDER_ID
-			],
-			// Terms of service url.
-			'tosUrl': 'https://www.google.com'
-		};
-
-		if (this.authenticated) {
-			var ui = new firebaseui.auth.AuthUI(firebase.auth());
-			// The start method will wait until the DOM is loaded.
-			ui.start('#firebaseauth-widget', uiConfig);
-		}
+		this.setupLoginUI();
 	},
 	methods: {
-		handleUserSignIn: function (user) {
+		setupLoginUI: function () {
+			ui.start('#firebaseauth-widget', uiConfig);
+		},
+		handleAuthStateChange: function (user) {
 			if (user) {
 				this.authenticated = true;
 				this.user = {
@@ -65,7 +68,16 @@ export default {
 					displayName: user.displayName,
 					email: user.email
 				}
+			} else {
+				this.authenticated = false;
+				this.user = {};
+				this.setupLoginUI();
 			}
+		},
+		logout: function () {
+			firebase.auth().signOut().then(function () {
+				console.log('out');
+			});
 		}
 	}
 }
