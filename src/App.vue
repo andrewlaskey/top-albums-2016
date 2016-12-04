@@ -1,43 +1,16 @@
 <template>
   <div id="app">
-  	<span>{{authenticated}}</span>
-  	<div v-if="authenticated">
-  		{{ user }}
-  	</div>
-  	<button v-if="authenticated" v-on:click="logout()">Log out</button>
-  	<div id="firebaseauth-widget"></div>
+  	<main-menu v-on:logout="logout()" :authenticated="authenticated"></main-menu>
+  	<login :authenticated="authenticated" :user="user"></login>
     <hello></hello>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello.vue'
 import firebase from 'firebase'
-import firebaseui from 'firebaseui'
-import {CONFIG} from '../private.config.js'
-
-firebase.initializeApp(CONFIG.FIREBASE)
-
-var uiConfig = {
-	'callbacks': {
-	    // Called when the user has been successfully signed in.
-	    'signInSuccess': function(user, credential, redirectUrl) {
-			// Do not redirect.
-			console.log('in');
-			return false;
-	    }
-	},
-	// Opens IDP Providers sign-in flow in a popup.
-	'signInFlow': 'popup',
-	'signInOptions': [
-		firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-		firebase.auth.EmailAuthProvider.PROVIDER_ID
-	],
-	// Terms of service url.
-	'tosUrl': 'https://www.google.com'
-};
-
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
+import MainMenu from './components/MainMenu.vue'
+import Login from './components/Login.vue'
+import Hello from './components/Hello.vue'
 
 export default {
 	name: 'app',
@@ -48,19 +21,17 @@ export default {
 		}
 	},
 	components: {
-		Hello
+		Hello,
+		MainMenu,
+		Login
 	},
 	created: function () {
 		var _this = this;
+
+		// set up listener to for user login and logout
 		firebase.auth().onAuthStateChanged(_this.handleAuthStateChange);
 	},
-	mounted: function () {
-		this.setupLoginUI();
-	},
 	methods: {
-		setupLoginUI: function () {
-			ui.start('#firebaseauth-widget', uiConfig);
-		},
 		handleAuthStateChange: function (user) {
 			if (user) {
 				this.authenticated = true;
@@ -72,7 +43,6 @@ export default {
 			} else {
 				this.authenticated = false;
 				this.user = {};
-				this.setupLoginUI();
 			}
 		},
 		logout: function () {
