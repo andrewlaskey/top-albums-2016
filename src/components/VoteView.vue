@@ -27,15 +27,24 @@
           </div>
         </li>
       </ol>
+      <p class="text-center">
+        <button type="button" class="btn btn-primary" v-show="albums.length >= 1" v-on:click="submitVotes">Update</button>
+      </p>
     </div>
   </div>
 </template>
 
 <script>
+import firebase from 'firebase'
 import Search from './Search.vue'
+
+const albumRef = firebase.database().ref('albums')
+const votesRef = firebase.database().ref('votes')
+const userRef = firebase.database().ref('user')
 
 export default {
   name: 'vote-view',
+  props: ['user'],
   data () {
     return {
       maxAlbums: 10,
@@ -75,6 +84,49 @@ export default {
         this.albums.splice(index, 1, this.albums[index + 1])
         this.albums.splice(index + 1, 1, temp)
       }
+    },
+    submitVotes: function () {
+      this.albums.forEach((album, index) => {
+        let points = 10 - index
+
+        albumRef.child(album.id).once('value', snapshot => {
+          // If album doesn't exist in db, add it
+          if (snapshot.val() === null) {
+            albumRef.child(album.id).set({
+              name: album.name,
+              image: album.image,
+              artist: album.artist,
+              url: album.url
+            })
+          }
+        })
+
+        // Check if user has already voted for this album
+        if ('voteId' in album) {
+          votesRef.child('all/' + album.voteId).update({score: points})
+        } else {
+          // Create new vote
+          let newVote = votesRef.child('all').push()
+
+          newVote.set({
+            album: album.id,
+            user: this.user.uid,
+            score: points
+          })
+
+          // Add new vote to user vote list
+          votesRef.child('user/' + this.user.uid + '/' + newVote.key).set(true)
+
+          // Add new vote to album vote list
+          votesRef.child('album/' + album.id + '/' + newVote.key).set(true)
+
+          // Update album data
+          album['voteId'] = newVote.key
+        }
+
+        // Add vote to user table
+
+      })
     }
   }
 }

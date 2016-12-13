@@ -2,7 +2,7 @@
   <div id="app">
   	<main-menu v-on:logout="logout()" :authenticated="authenticated"></main-menu>
   	<login :authenticated="authenticated" :user="user"></login>
-    <router-view></router-view>
+    <router-view :user="user"></router-view>
   </div>
 </template>
 
