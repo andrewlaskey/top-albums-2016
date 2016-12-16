@@ -1,15 +1,13 @@
 <template>
-  <div id="app">
+  <div id="app" class="container">
   	<main-menu v-on:logout="logout()" :authenticated="authenticated"></main-menu>
-  	<login :authenticated="authenticated" :user="user"></login>
-    <router-view :user="user"></router-view>
+    <router-view :authenticated="authenticated" :user="user"></router-view>
   </div>
 </template>
 
 <script>
 import firebase from 'firebase'
 import MainMenu from './components/MainMenu.vue'
-import Login from './components/Login.vue'
 
 export default {
 	name: 'app',
@@ -18,8 +16,7 @@ export default {
 		return {}
 	},
 	components: {
-		MainMenu,
-		Login
+		MainMenu
 	},
 	methods: {
 		logout: function () {

@@ -1,9 +1,9 @@
 <template>
 	<div class="login">
-		<span>{{authenticated}}</span>
 	  	<div v-if="authenticated">
-	  		{{ user }}
+	  		<p>You are logged in as {{user.displayName}} ({{user.email}}).</p>
 	  	</div>
+	  	<p v-if="!authenticated">Sign in with email or the Googly to vote!</p>
 	  	<div id="firebaseauth-widget" v-if="!authenticated"></div>
 	</div>
 </template>
