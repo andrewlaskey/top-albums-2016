@@ -54,6 +54,48 @@ export default {
   components: {
     Search
   },
+  created: function () {
+    // Get user's votes
+    votesRef.child('user/' + this.user.uid).once('value')
+      .then(snapshot => {
+        if (snapshot.val() !== null) {
+
+          // For each vote get voting data
+          snapshot.forEach(childSnapshot => {
+            let voteKey = childSnapshot.key
+
+            // Get vote data (albumId and vote score)
+            votesRef.child('all/' + voteKey).once('value', voteSnapshot => {
+              let vote = voteSnapshot.val()
+              let albumId = vote.album
+
+              // Get album data
+              albumRef.child(albumId).once('value', albumSnapshot => {
+                let album = albumSnapshot.val()
+
+                // Add the album data to the album array
+                this.albums.push({
+                  id: albumId,
+                  name: album.name,
+                  artist: album.artist,
+                  image: album.image,
+                  url: album.url,
+                  voteId: voteKey,
+                  score: vote.score
+                })
+
+                // Resort album list by score after getting data from firebase
+                if (this.albums.length > 1) {
+                  this.albums.sort((a, b) => {
+                    return parseInt(b.score, 10) - parseInt(a.score, 10)
+                  })
+                }
+              })
+            })
+          })
+        }
+      })
+  },
   methods: {
     addAlbum: function(album) {
       let duplicate = false
@@ -123,8 +165,6 @@ export default {
           // Update album data
           album['voteId'] = newVote.key
         }
-
-        // Add vote to user table
 
       })
     }
