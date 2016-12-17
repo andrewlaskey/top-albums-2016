@@ -120,6 +120,9 @@ export default {
 
         // Remove vote from album list
         votesRef.child('album/' + this.albums[index].id + '/' + voteId).remove()
+
+        // Remove vote from all votes list
+        votesRef.child('all/' + voteId).remove()
       }
 
       this.albums.splice(index, 1)
