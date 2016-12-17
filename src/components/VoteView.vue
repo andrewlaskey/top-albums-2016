@@ -111,6 +111,17 @@ export default {
       }
     },
     removeAlbum: function (index) {
+      // if this is an existing album/vote
+      if ('voteId' in this.albums[index]) {
+        let voteId = this.albums[index].voteId
+
+        // Remove vote from user
+        votesRef.child('user/' + this.user.uid + '/' + voteId).remove()
+
+        // Remove vote from album list
+        votesRef.child('album/' + this.albums[index].id + '/' + voteId).remove()
+      }
+
       this.albums.splice(index, 1)
     },
     moveUp: function (index) {
