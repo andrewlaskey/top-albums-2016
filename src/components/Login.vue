@@ -12,12 +12,24 @@
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
 
+const userRef = firebase.database().ref('user')
+
 var uiConfig = {
 	'callbacks': {
 	    // Called when the user has been successfully signed in.
 	    'signInSuccess': function(user, credential, redirectUrl) {
 			// Do not redirect.
 			console.log('in');
+
+			// Add user data to database on login
+			userRef.child(user.uid).once('value', snapshot => {
+	          if (snapshot.val() === null) {
+	            userRef.child(user.uid).set({
+	              displayName: user.displayName
+	            })
+	          }
+	        })
+
 			return false;
 	    }
 	},
