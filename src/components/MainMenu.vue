@@ -6,6 +6,9 @@
 		<router-link tag="li" to="/vote" active-class="active" v-bind:exact="true">
 			<a>Vote</a>
 		</router-link>
+		<router-link tag="li" to="/users" active-class="active" v-bind:exact="true">
+			<a>User Votes</a>
+		</router-link>
 		<li v-if="authenticated" v-on:click="logout"><a href="#">Logout</a></li>
 	</ul>
 </template>

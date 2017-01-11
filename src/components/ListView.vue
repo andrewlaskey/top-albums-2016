@@ -5,7 +5,7 @@
     </div>
     <div class="col-md-8">
       <ul class="list-group">
-            <li v-for="(album, index) in albums" :key="albums.id" class="list-group-item">
+            <li v-for="(album, index) in albums" :key="album.id" class="list-group-item">
               <div class="row">
                   <div class="col-sm-3">
                     <img v-bind:src="album.image" class="img-responsive img-rounded">

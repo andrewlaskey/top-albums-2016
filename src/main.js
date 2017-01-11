@@ -7,6 +7,7 @@ import {firebaseInit} from './firebaseInit.js'
 import App from './App.vue'
 import ListView from './components/ListView.vue'
 import VoteView from './components/VoteView.vue'
+import UsersView from './components/UsersView.vue'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,10 @@ const routes = [
 		meta: {
 			requiresAuth: true
 		}
+	},
+	{
+		path: '/users',
+		component: UsersView
 	}
 ]
 
