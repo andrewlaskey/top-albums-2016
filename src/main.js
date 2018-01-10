@@ -55,7 +55,8 @@ var vm = new Vue({ // eslint-disable-line no-new
   data () {
   	return {
 	  	authenticated: authenticated,
-	  	user: {}
+	  	user: {},
+	  	year: 2017
 	}
   },
   router,
@@ -65,7 +66,7 @@ var vm = new Vue({ // eslint-disable-line no-new
   		this.user = user
   	}
   },
-  template: '<app :authenticated="authenticated" :user="user"></app>',
+  template: '<app :authenticated="authenticated" :user="user" :year="year"></app>',
   components: {
   	App
   }

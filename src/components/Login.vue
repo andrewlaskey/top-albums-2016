@@ -12,7 +12,7 @@
 import firebase from 'firebase'
 import firebaseui from 'firebaseui'
 
-const userRef = firebase.database().ref('user')
+let userRef = {}
 
 var uiConfig = {
 	'callbacks': {
@@ -47,7 +47,7 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 export default {
 	name: 'login',
-	props: ['authenticated', 'user'],
+	props: ['authenticated', 'user', 'year'],
 	data () {
 		return {}
 	},
@@ -57,6 +57,9 @@ export default {
 				ui.start('#firebaseauth-widget', uiConfig);
 			}
 		}
+	},
+	created: function () {
+		userRef = firebase.database().ref(this.year + '/user')
 	},
 	mounted: function () {
 		this.setupAuthUI()

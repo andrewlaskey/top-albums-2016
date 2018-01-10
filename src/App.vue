@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container">
   	<main-menu v-on:logout="logout()" :authenticated="authenticated"></main-menu>
-    <router-view :authenticated="authenticated" :user="user"></router-view>
+    <router-view :authenticated="authenticated" :user="user" :year="year"></router-view>
   </div>
 </template>
 
@@ -11,7 +11,7 @@ import MainMenu from './components/MainMenu.vue'
 
 export default {
 	name: 'app',
-	props: ['authenticated', 'user'],
+	props: ['authenticated', 'user', 'year'],
 	data () {
 		return {}
 	},

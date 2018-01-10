@@ -38,13 +38,13 @@
 import firebase from 'firebase'
 import Search from './Search.vue'
 
-const albumRef = firebase.database().ref('albums')
-const votesRef = firebase.database().ref('votes')
-const userRef = firebase.database().ref('user')
+let albumRef = {}
+let votesRef = {}
+let userRef = {}
 
 export default {
   name: 'vote-view',
-  props: ['user'],
+  props: ['user', 'year'],
   data () {
     return {
       maxAlbums: 10,
@@ -56,6 +56,10 @@ export default {
   },
   created: function () {
     // Get user's votes
+    albumRef = firebase.database().ref(this.year + '/albums')
+    votesRef = firebase.database().ref(this.year + '/votes')
+    userRef = firebase.database().ref(this.year + '/user')
+
     votesRef.child('user/' + this.user.uid).once('value')
       .then(snapshot => {
         if (snapshot.val() !== null) {

@@ -1,7 +1,7 @@
 <template>
   <div class="list row">
     <div class="col-md-4">
-      <login :authenticated="authenticated" :user="user"></login>
+      <login :authenticated="authenticated" :user="user" :year="year"></login>
     </div>
     <div class="col-md-8">
       <ul class="list-group">
@@ -26,12 +26,12 @@
 import Login from './Login.vue'
 import firebase from 'firebase'
 
-const albumRef = firebase.database().ref('albums')
-const votesRef = firebase.database().ref('votes')
+let albumRef = {}
+let votesRef = {}
 
 export default {
   name: 'list-view',
-  props: ['authenticated', 'user'],
+  props: ['authenticated', 'user', 'year'],
   data () {
     return {
       albums: []
@@ -41,6 +41,9 @@ export default {
     Login
   },
   created: function() {
+    albumRef = firebase.database().ref(this.year + '/albums')
+    votesRef = firebase.database().ref(this.year + '/votes')
+
     // Get all album votes
     votesRef.child('album').once('value')
       .then(snapshot => {

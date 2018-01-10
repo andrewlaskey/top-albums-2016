@@ -21,18 +21,23 @@
 <script>
   import firebase from 'firebase'
 
-  const albumRef = firebase.database().ref('albums')
-  const votesRef = firebase.database().ref('votes')
-  const userRef = firebase.database().ref('user')
+  let albumRef = {}
+  let votesRef = {}
+  let userRef = {}
 
   export default {
     name: 'users-view',
+    props: ['year'],
     data () {
       return {
         users: []
       }
     },
     created: function () {
+      albumRef = firebase.database().ref(this.year + '/albums')
+      votesRef = firebase.database().ref(this.year + '/votes')
+      userRef = firebase.database().ref(this.year + '/user')
+
       // Get all users who voted
       votesRef.child('user').once('value')
         .then(snapshot => {

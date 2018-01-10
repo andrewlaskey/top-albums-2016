@@ -30,6 +30,7 @@
 
 <script>
 import axios from 'axios'
+import {CONFIG} from '../../private.config.js'
 
 export default {
   name: 'search',
@@ -47,28 +48,30 @@ export default {
   methods: {
     searchSpotify: function () {
       var _this = this;
-      var query = 'album:' + this.search.album + ' artist:' + this.search.artist;
+      var query = this.search.album;
 
-      axios.get('https://api.spotify.com/v1/search',{
+      axios.get('http://ws.audioscrobbler.com/2.0/',{
         params: {
-          type: 'album',
-          q: query
+          method: 'album.search',
+          album: this.search.album,
+          api_key: CONFIG.LAST_FM.apiKey,
+          format: 'json'
         }
       })
       .then(function (response) {
         if (response.status === 200) {
-          if (response.data.albums.items.length === 0) {
+          if (response.data.results.albummatches.album.length === 0) {
             _this.noResults = true;
           } else {
             console.log(response);
             _this.noResults = false;
-            _this.albumResults = response.data.albums.items.map( album => {
+            _this.albumResults = response.data.results.albummatches.album.map( album => {
               return {
-                artist: album.artists[0].name,
+                artist: album.artist,
                 name: album.name,
-                image: album.images[0].url,
-                id: album.id,
-                url: album.external_urls.spotify
+                image: album.image[0]['#text'],
+                id: encodeURI(album.name + album.artist),
+                url: album.url
               }
             });
           }
