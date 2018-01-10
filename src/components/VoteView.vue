@@ -8,7 +8,7 @@
     <div class="col-md-6">
       <h2>Vote</h2>
       <p>Sort and submit your favorite albums</p>
-      <ul class="list-group">
+      <ol class="list-group">
         <li v-for="(album, index) in albums" :key="albums.id" class="list-group-item">
           <div class="row">
             <div class="col-sm-3">
