@@ -50,7 +50,7 @@ export default {
       var _this = this;
       var query = this.search.album;
 
-      axios.get('http://ws.audioscrobbler.com/2.0/',{
+      axios.get('https://ws.audioscrobbler.com/2.0/',{
         params: {
           method: 'album.search',
           album: this.search.album,
@@ -66,11 +66,14 @@ export default {
             console.log(response);
             _this.noResults = false;
             _this.albumResults = response.data.results.albummatches.album.map( album => {
+              let s = album.name + album.artist
+              s = s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+
               return {
                 artist: album.artist,
                 name: album.name,
                 image: album.image[0]['#text'],
-                id: encodeURI(album.name + album.artist),
+                id: encodeURI(s),
                 url: album.url
               }
             });
