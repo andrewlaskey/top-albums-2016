@@ -3,16 +3,14 @@ import {CONFIG} from '../private.config.js'
 
 var fbApp = firebase.initializeApp(CONFIG.FIREBASE);
 
-export function firebaseInit(func) {
-	
-
-	firebase.auth().onAuthStateChanged(function (user) {
-	  if (user) {
-	    func(true, user)
-	  } else {
-	    func(false)
-	  }
-	}, function(error) {
-	  console.log(error)
-	})
+export function firebaseInit (func) {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      func(true, user)
+    } else {
+      func(false)
+    }
+  },(error) => {
+    console.log(error)
+  })
 }

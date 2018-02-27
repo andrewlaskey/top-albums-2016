@@ -101,7 +101,7 @@ export default {
       })
   },
   methods: {
-    addAlbum: function(album) {
+    addAlbum: function (album) {
       let duplicate = false
 
       this.albums.forEach(check => {

@@ -47,46 +47,46 @@ export default {
   },
   methods: {
     searchSpotify: function () {
-      var _this = this;
-      var query = this.search.album;
+      let _this = this;
+      left query = this.search.album;
 
-      axios.get('https://ws.audioscrobbler.com/2.0/',{
-        params: {
-          method: 'album.search',
-          album: this.search.album,
-          api_key: CONFIG.LAST_FM.apiKey,
-          format: 'json'
-        }
-      })
-      .then(function (response) {
-        if (response.status === 200) {
-          if (response.data.results.albummatches.album.length === 0) {
-            _this.noResults = true;
-          } else {
-            console.log(response);
-            _this.noResults = false;
-            _this.albumResults = response.data.results.albummatches.album.map( album => {
-              let s = album.name + album.artist
-              s = s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
-
-              return {
-                artist: album.artist,
-                name: album.name,
-                image: album.image[0]['#text'],
-                id: encodeURI(s),
-                url: album.url
-              }
-            });
+      axios
+        .get('https://ws.audioscrobbler.com/2.0/',{
+          params: {
+            method: 'album.search',
+            album: this.search.album,
+            api_key: CONFIG.LAST_FM.apiKey,
+            format: 'json'
           }
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            if (response.data.results.albummatches.album.length === 0) {
+              this.noResults = true
+            } else {
+              this.noResults = false
+              this.albumResults = response.data.results.albummatches.album.map( album => {
+                let s = album.name + album.artist
+                s = s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+
+                return {
+                  artist: album.artist,
+                  name: album.name,
+                  image: album.image[0]['#text'],
+                  id: encodeURI(s),
+                  url: album.url
+                }
+              })
+            }
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
     selectAlbum: function (album) {
       if (this.enabled) {
-        this.$emit('selectAlbum', album);
+        this.$emit('selectAlbum', album)
       }
     }
   }
