@@ -40,67 +40,85 @@ export default {
   components: {
     Login
   },
-  created: function() {
-    albumRef = firebase.database().ref(this.year + '/albums')
-    votesRef = firebase.database().ref(this.year + '/votes')
+  created () {
+    this.loadAlbumList();
+  },
+  watch: {
+    // call again the method if the route changes
+    '$route': 'loadAlbumList'
+  },
+  methods: {
+    loadAlbumList () {
+      // reset
+      this.albums = [];
 
-    // Get all album votes
-    votesRef.child('album').once('value')
-      .then(snapshot => {
+      albumRef = firebase.database().ref(this.year + '/albums')
+      votesRef = firebase.database().ref(this.year + '/votes')
 
-        snapshot.forEach(childSnapshot => {
-          childSnapshot.forEach(vote => {
-            let voteKey = vote.key
+      // Get all album votes
+      votesRef.child('album').once('value')
+        .then(snapshot => {
 
-            // Get vote data (albumId and vote score)
-            votesRef.child('all/' + voteKey).once('value', voteSnapshot => {
-              let vote = voteSnapshot.val()
-              let albumId = vote.album
+          snapshot.forEach(childSnapshot => {
+            childSnapshot.forEach(vote => {
+              let voteKey = vote.key
 
-              // Get album data
-              albumRef.child(albumId).once('value', albumSnapshot => {
-                let album = albumSnapshot.val()
-                let found = false
+              // Get vote data (albumId and vote score)
+              votesRef.child('all/' + voteKey).once('value', voteSnapshot => {
+                let vote = voteSnapshot.val()
+                let albumId = vote.album
 
-                // Search album array for existing album
-                for (var i = this.albums.length - 1; i >= 0; i--) {
-                  if (this.albums[i].id === albumId) {
-                    found = i
+                // Get album data
+                albumRef.child(albumId).once('value', albumSnapshot => {
+                  let album = albumSnapshot.val()
+                  let found = false
+
+                  // Search album array for existing album
+                  for (var i = this.albums.length - 1; i >= 0; i--) {
+                    if (this.albums[i].id === albumId) {
+                      found = i
+                    }
+                  };
+
+                  if (found !== false) {
+                    // If album exists already, update score
+                    let temp = this.albums[found]
+                    temp.score += parseInt(vote.score, 10)
+                    temp.votes++
+                    this.albums.splice(found, 1, temp)
+                  } else {
+                    // If album not in array, add
+                    this.albums.push({
+                      id: albumId,
+                      name: album.name,
+                      artist: album.artist,
+                      image: album.image,
+                      url: album.url,
+                      voteId: voteKey,
+                      score: parseInt(vote.score, 10),
+                      votes: 1
+                    })
                   }
-                };
 
-                if (found !== false) {
-                  // If album exists already, update score
-                  let temp = this.albums[found]
-                  temp.score += parseInt(vote.score, 10)
-                  temp.votes++
-                  this.albums.splice(found, 1, temp)
-                } else {
-                  // If album not in array, add
-                  this.albums.push({
-                    id: albumId,
-                    name: album.name,
-                    artist: album.artist,
-                    image: album.image,
-                    url: album.url,
-                    voteId: voteKey,
-                    score: parseInt(vote.score, 10),
-                    votes: 1
-                  })
-                }
-
-                // Resort album list by score after getting data from firebase
-                if (this.albums.length > 1) {
-                  this.albums.sort((a, b) => {
-                    return parseInt(b.score, 10) - parseInt(a.score, 10)
-                  })
-                }
+                  // Resort album list by score after getting data from firebase
+                  if (this.albums.length > 1) {
+                    this.albums.sort((a, b) => {
+                      return parseInt(b.score, 10) - parseInt(a.score, 10)
+                    })
+                  }
+                })
               })
             })
           })
         })
-      })
+      }
   }
 }
 
 </script>
+
+<style>
+  .img-responsive {
+    width: 100%;
+  }
+</style>

@@ -48,7 +48,7 @@ export default {
   methods: {
     searchSpotify: function () {
       let _this = this;
-      left query = this.search.album;
+      let query = this.search.album;
 
       axios
         .get('https://ws.audioscrobbler.com/2.0/',{

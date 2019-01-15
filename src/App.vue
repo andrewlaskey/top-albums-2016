@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <main-menu v-on:logout="logout()" :authenticated="authenticated"></main-menu>
+    <main-menu v-on:logout="logout()" :authenticated="authenticated" :year="year"></main-menu>
     <router-view :authenticated="authenticated" :user="user" :year="year"></router-view>
   </div>
 </template>
@@ -30,3 +30,6 @@ export default {
   }
 }
 </script>
+
+<style src="../node_modules/firebaseui/dist/firebaseui.css"></style>
+<style></style>

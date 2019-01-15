@@ -17,18 +17,18 @@ firebaseInit(userStatus)
 
 const routes = [
 	{ 
-		path: '/',
+		path: '/:year',
 		component: ListView
 	},
 	{
-		path: '/vote',
+		path: '/:year/vote',
 		component: VoteView,
 		meta: {
 			requiresAuth: true
 		}
 	},
 	{
-		path: '/users',
+		path: '/:year/users',
 		component: UsersView
 	}
 ]
@@ -55,8 +55,7 @@ var vm = new Vue({ // eslint-disable-line no-new
   data () {
   	return {
 	  	authenticated: authenticated,
-	  	user: {},
-	  	year: 2017
+	  	user: {}
 	}
   },
   router,
@@ -66,7 +65,7 @@ var vm = new Vue({ // eslint-disable-line no-new
   		this.user = user
   	}
   },
-  template: '<app :authenticated="authenticated" :user="user" :year="year"></app>',
+  template: '<app :authenticated="authenticated" :user="user" :year="parseInt($route.params.year, 10)"></app>',
   components: {
   	App
   }
